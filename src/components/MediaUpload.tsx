@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import { Image, Video, X, Upload, AlertCircle } from "lucide-react";
-import { uploadToR2, validateFile, formatFileSize, UploadProgress } from "@/lib/r2-upload";
+import { uploadToR2, validateFile, formatFileSize, UploadProgress } from "@/lib/supabase-upload";
 import { useToast } from "@/hooks/use-toast";
 
 export interface MediaFile {
@@ -251,21 +251,6 @@ export default function MediaUpload({ onMediaChange, maxFiles = 4 }: MediaUpload
         </div>
       )}
 
-      {/* Info message if R2 not configured */}
-      {!import.meta.env.VITE_R2_ENDPOINT && media.length === 0 && (
-        <Card className="border-warning/50 bg-warning/5 p-4">
-          <div className="flex gap-3">
-            <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Chế độ Demo</p>
-              <p className="text-xs text-muted-foreground">
-                Cloudflare R2 chưa được cấu hình. Files sẽ được lưu tạm thời trong browser.
-                Xem <code className="text-xs bg-muted px-1 py-0.5 rounded">CLOUDFLARE_SETUP.md</code> để cấu hình.
-              </p>
-            </div>
-          </div>
-        </Card>
-      )}
     </div>
   );
 }
