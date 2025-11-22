@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import logo from "@/assets/logo.jpg";
 export default function Navbar() {
   const location = useLocation();
   const [isDark, setIsDark] = useState(true);
@@ -43,9 +44,7 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-glow">
-              <span className="text-xl font-bold text-primary-foreground font-mono">CF</span>
-            </div>
+            <img src={logo} alt="Fun Profile Web3" className="h-10 w-10 rounded-full object-cover shadow-glow" />
             <span className="hidden text-xl font-heading font-bold text-primary sm:block">
               Camly Fun
             </span>
