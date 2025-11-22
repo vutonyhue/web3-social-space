@@ -36,8 +36,28 @@ export default function CreatePost() {
 
     setIsPosting(true);
 
-    // Simulate posting (replace with actual API call)
-    setTimeout(() => {
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("Bạn cần đăng nhập để đăng bài");
+      }
+
+      // Extract media URLs
+      const mediaUrls = media.map(m => m.url).filter(Boolean) as string[];
+
+      // Insert post into database
+      const { error } = await supabase
+        .from('posts')
+        .insert({
+          user_id: user.id,
+          content: content.trim() || null,
+          media_urls: mediaUrls.length > 0 ? mediaUrls : null,
+        });
+
+      if (error) throw error;
+
       setIsPosting(false);
       setContent("");
       setMedia([]);
@@ -47,7 +67,15 @@ export default function CreatePost() {
         title: "Thành công",
         description: "Bài viết của bạn đã được đăng!",
       });
-    }, 1000);
+    } catch (error: any) {
+      console.error("Error posting:", error);
+      setIsPosting(false);
+      toast({
+        title: "Lỗi",
+        description: error.message || "Không thể đăng bài. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
