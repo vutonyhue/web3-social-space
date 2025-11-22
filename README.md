@@ -1,73 +1,72 @@
-# Welcome to your Lovable project
+# Camly Fun - Nền tảng Mạng Xã Hội Web3
 
-## Project info
+Một nền tảng mạng xã hội Web3 hiện đại với tích hợp crypto, blockchain và cộng đồng sôi động.
 
-**URL**: https://lovable.dev/projects/02a94e1e-2ff2-4306-bfbb-790d238b4b06
+## ✨ Tính năng chính
 
-## How can I edit this code?
+- **Feed mạng xã hội**: Đăng bài, tương tác, bình luận và reactions
+- **Hệ thống bạn bè**: Kết nối với cộng đồng Web3
+- **Ví Crypto**: Quản lý CAMLY token và nhận thưởng
+- **Honor Board**: Theo dõi thành tích và phần thưởng
+- **Trending Topics**: Khám phá các chủ đề hot về crypto, blockchain, NFT
+- **Responsive Design**: Hoạt động mượt mà trên mọi thiết bị
 
-There are several ways of editing your application.
+## 🚀 Công nghệ sử dụng
 
-**Use Lovable**
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Routing**: React Router v6
+- **Fonts**: Inter & Space Grotesk
+- **Media Storage**: Cloudflare R2 (xem [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md))
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/02a94e1e-2ff2-4306-bfbb-790d238b4b06) and start prompting.
+## 📦 Cài đặt
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone repository
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Cài đặt dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Chạy development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## ⚙️ Cấu hình Cloudflare R2
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Để sử dụng tính năng upload ảnh và video, vui lòng xem hướng dẫn chi tiết tại [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md).
 
-**Use GitHub Codespaces**
+Tóm tắt:
+1. Tạo R2 bucket trên Cloudflare
+2. Lấy API credentials
+3. Tạo file `.env.local` với các biến môi trường cần thiết
+4. Cài đặt AWS SDK: `npm install @aws-sdk/client-s3`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🎨 Design System
 
-## What technologies are used for this project?
+Ứng dụng sử dụng một design system tùy chỉnh với:
+- Màu chủ đạo: Green (#22c55e) & Yellow (#f59e0b)
+- Dark mode tích hợp sẵn
+- Animations mượt mà với framer-motion
+- Semantic color tokens cho khả năng tùy biến cao
 
-This project is built with:
+## 📱 Các trang chính
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- `/` - Feed (Trang chủ)
+- `/friends` - Bạn bè
+- `/profile` - Hồ sơ cá nhân
+- `/wallet` - Ví crypto
 
-## How can I deploy this project?
+## 🔐 Bảo mật
 
-Simply open [Lovable](https://lovable.dev/projects/02a94e1e-2ff2-4306-bfbb-790d238b4b06) and click on Share -> Publish.
+- Không lưu credentials trong code
+- Sử dụng environment variables
+- Implement rate limiting cho API calls
+- Validate file uploads (type & size)
 
-## Can I connect a custom domain to my Lovable project?
+## 📄 License
 
-Yes, you can!
+MIT License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
