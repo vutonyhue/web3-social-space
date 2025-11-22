@@ -51,25 +51,20 @@ export default function Post({
         {media.map((item, index) => (
           <div
             key={index}
-            className="relative aspect-square overflow-hidden rounded-lg bg-muted"
+            className="relative overflow-hidden rounded-lg bg-muted"
           >
             {item.type === "image" ? (
               <img
                 src={item.url}
                 alt={`Media ${index + 1}`}
-                className="h-full w-full object-cover transition-transform hover:scale-105"
+                className="w-full h-auto object-contain transition-transform hover:scale-105"
               />
             ) : (
-              <div className="group relative h-full w-full">
-                <video
-                  src={item.url}
-                  className="h-full w-full object-cover"
-                  controls
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity group-hover:bg-black/20">
-                  <Play className="h-12 w-12 text-white" />
-                </div>
-              </div>
+              <video
+                src={item.url}
+                className="w-full h-auto object-contain"
+                controls
+              />
             )}
           </div>
         ))}
