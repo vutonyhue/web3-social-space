@@ -13,19 +13,7 @@ export interface UploadResult {
 }
 
 /**
- * Convert file to base64
- */
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-}
-
-/**
- * Upload a file to Cloudflare R2 via Supabase Edge Function
+ * Upload a file to Cloudflare R2 using presigned URL (direct browser upload)
  */
 export async function uploadToR2(
   file: File,
@@ -33,57 +21,66 @@ export async function uploadToR2(
   onProgress?: (progress: UploadProgress) => void
 ): Promise<UploadResult> {
   try {
-    // Simulate initial progress
-    if (onProgress) {
-      onProgress({
-        loaded: 0,
-        total: file.size,
-        percentage: 0,
-      });
-    }
-
-    // Convert file to base64
-    const base64 = await fileToBase64(file);
-    
-    if (onProgress) {
-      onProgress({
-        loaded: file.size * 0.3,
-        total: file.size,
-        percentage: 30,
-      });
-    }
-
-    // Call edge function to upload to R2
-    const { data, error } = await supabase.functions.invoke('upload-to-r2', {
+    // Step 1: Get presigned URL from Edge Function
+    const { data, error } = await supabase.functions.invoke('generate-presigned-url', {
       body: {
-        file: {
-          name: file.name,
-          type: file.type,
-          base64: base64,
-        },
+        fileName: file.name,
+        fileType: file.type,
         folder: folder,
       },
     });
 
     if (error) {
-      console.error("Edge function error:", error);
+      console.error("Error getting presigned URL:", error);
       throw error;
     }
 
     if (!data || !data.success) {
-      throw new Error(data?.error || "Upload failed");
+      throw new Error(data?.error || "Failed to get presigned URL");
     }
 
-    // Simulate completion progress
-    if (onProgress) {
-      onProgress({
-        loaded: file.size,
-        total: file.size,
-        percentage: 100,
+    const { presignedUrl, publicUrl } = data;
+
+    // Step 2: Upload file directly to R2 using presigned URL with progress tracking
+    return new Promise<UploadResult>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      // Track upload progress
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable && onProgress) {
+          onProgress({
+            loaded: e.loaded,
+            total: e.total,
+            percentage: Math.round((e.loaded / e.total) * 100),
+          });
+        }
       });
-    }
 
-    return { success: true, url: data.url };
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          console.log("Upload successful");
+          resolve({ success: true, url: publicUrl });
+        } else {
+          console.error("Upload failed with status:", xhr.status);
+          reject(new Error(`Upload failed with status ${xhr.status}`));
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        console.error("Upload error");
+        reject(new Error("Network error during upload"));
+      });
+
+      xhr.addEventListener('abort', () => {
+        console.error("Upload aborted");
+        reject(new Error("Upload aborted"));
+      });
+
+      xhr.open('PUT', presignedUrl, true);
+      xhr.setRequestHeader('Content-Type', file.type);
+      xhr.setRequestHeader('x-amz-acl', 'public-read');
+      xhr.send(file);
+    });
   } catch (error) {
     console.error("Upload failed:", error);
     return { success: false, error };
