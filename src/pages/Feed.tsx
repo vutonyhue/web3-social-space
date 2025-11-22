@@ -3,53 +3,70 @@ import HonorBoard from "@/components/HonorBoard";
 import CreatePost from "@/components/CreatePost";
 import Post from "@/components/Post";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface PostWithProfile {
+  id: string;
+  content: string | null;
+  media_urls: string[] | null;
+  created_at: string;
+  user_id: string;
+  profiles: {
+    username: string | null;
+    avatar_url: string | null;
+  } | null;
+}
 
 export default function Feed() {
-  const mockPosts = [
-    {
-      author: "Nguyễn Văn A",
-      avatar: "NVA",
-      content: "Hôm nay thị trường crypto tăng mạnh! Bitcoin đã vượt mốc $45,000 🚀 #Crypto #Bitcoin",
-      timestamp: new Date(Date.now() - 3600000),
-      likes: 24,
-      comments: 8,
-      shares: 5,
-      media: [
+  const [posts, setPosts] = useState<PostWithProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .select(`
+          *,
+          profiles (
+            username,
+            avatar_url
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+
+    // Real-time subscription for new posts
+    const channel = supabase
+      .channel('posts-changes')
+      .on(
+        'postgres_changes',
         {
-          type: "image" as const,
-          url: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&q=80",
+          event: 'INSERT',
+          schema: 'public',
+          table: 'posts'
         },
-      ],
-    },
-    {
-      author: "Trần Thị B",
-      avatar: "TTB",
-      content: "Vừa tham gia một dự án NFT mới rất thú vị! Ai có kinh nghiệm về NFT thì chia sẻ với mình nhé 🎨 #NFT #Web3",
-      timestamp: new Date(Date.now() - 7200000),
-      likes: 15,
-      comments: 12,
-      shares: 3,
-      media: [
-        {
-          type: "image" as const,
-          url: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=800&q=80",
-        },
-        {
-          type: "image" as const,
-          url: "https://images.unsplash.com/photo-1640161704729-cbe966a08476?w=800&q=80",
-        },
-      ],
-    },
-    {
-      author: "Lê Văn C",
-      avatar: "LVC",
-      content: "Chia sẻ một số tips về DeFi farming cho người mới bắt đầu. Đừng quên DYOR (Do Your Own Research) nhé! 💡 #DeFi #CryptoTips",
-      timestamp: new Date(Date.now() - 10800000),
-      likes: 32,
-      comments: 18,
-      shares: 10,
-    },
-  ];
+        () => {
+          fetchPosts(); // Refresh when new post is added
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,8 +83,14 @@ export default function Feed() {
               {/* Create Post */}
               <CreatePost />
 
-              {/* Empty State or Posts */}
-              {mockPosts.length === 0 ? (
+              {/* Loading State */}
+              {loading ? (
+                <Card>
+                  <CardContent className="flex min-h-[300px] items-center justify-center py-12">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                  </CardContent>
+                </Card>
+              ) : posts.length === 0 ? (
                 <Card className="border-dashed">
                   <CardContent className="flex min-h-[300px] flex-col items-center justify-center py-12 text-center">
                     <p className="mb-4 text-lg font-medium text-muted-foreground">
@@ -76,9 +99,27 @@ export default function Feed() {
                   </CardContent>
                 </Card>
               ) : (
-                mockPosts.map((post, index) => (
-                  <Post key={index} {...post} />
-                ))
+                posts.map((post) => {
+                  const username = post.profiles?.username || 'User';
+                  const avatarInitials = username.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                  
+                  return (
+                    <Post
+                      key={post.id}
+                      author={username}
+                      avatar={avatarInitials}
+                      content={post.content || ''}
+                      timestamp={new Date(post.created_at)}
+                      likes={0}
+                      comments={0}
+                      shares={0}
+                      media={post.media_urls?.map(url => ({
+                        type: 'image' as const,
+                        url
+                      }))}
+                    />
+                  );
+                })
               )}
             </div>
           </main>
