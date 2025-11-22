@@ -31,7 +31,7 @@ export default function Sidebar() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Sparkles className="h-5 w-5 text-primary" />
-            Về Camly Fun
+            Về Fun Profile
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
