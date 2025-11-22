@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Heart, Users, TrendingUp, Award } from "lucide-react";
+import logo from "@/assets/logo.jpg";
 
 export default function HonorBoard() {
   const stats = [
@@ -14,9 +15,7 @@ export default function HonorBoard() {
     <Card className="border-primary bg-gradient-to-br from-primary via-primary-light to-secondary shadow-glow">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-center gap-3">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-primary-foreground bg-primary-foreground shadow-lg">
-            <span className="text-2xl font-bold text-primary">CF</span>
-          </div>
+          <img src={logo} alt="Fun Profile Web3" className="h-16 w-16 rounded-full object-cover border-4 border-primary-foreground shadow-lg" />
         </div>
         <CardTitle className="text-center text-2xl font-heading font-bold text-primary-foreground">
           HONOR BOARD
