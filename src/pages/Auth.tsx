@@ -151,7 +151,7 @@ export default function Auth() {
       <Card className="w-full max-w-md p-8 space-y-6 border-2">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Camly Fun
+            Fun Profile
           </h1>
           <p className="text-muted-foreground">
             Kết nối và chia sẻ với bạn bè

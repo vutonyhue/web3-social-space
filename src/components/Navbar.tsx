@@ -46,7 +46,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="Fun Profile Web3" className="h-10 w-10 rounded-full object-cover shadow-glow" />
             <span className="hidden text-xl font-heading font-bold text-primary sm:block">
-              Camly Fun
+              Fun Profile
             </span>
           </Link>
 
