@@ -15,6 +15,12 @@ export default function Feed() {
       likes: 24,
       comments: 8,
       shares: 5,
+      media: [
+        {
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&q=80",
+        },
+      ],
     },
     {
       author: "Trần Thị B",
@@ -24,6 +30,16 @@ export default function Feed() {
       likes: 15,
       comments: 12,
       shares: 3,
+      media: [
+        {
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=800&q=80",
+        },
+        {
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1640161704729-cbe966a08476?w=800&q=80",
+        },
+      ],
     },
     {
       author: "Lê Văn C",
