@@ -113,10 +113,13 @@ export default function Feed() {
                       likes={0}
                       comments={0}
                       shares={0}
-                      media={post.media_urls?.map(url => ({
-                        type: 'image' as const,
-                        url
-                      }))}
+                      media={post.media_urls?.map(url => {
+                        const isVideo = /\.(mp4|webm|mov|avi|mkv)$/i.test(url);
+                        return {
+                          type: isVideo ? 'video' as const : 'image' as const,
+                          url
+                        };
+                      })}
                     />
                   );
                 })
