@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import HonorBoard from "@/components/HonorBoard";
 import CreatePost from "@/components/CreatePost";
@@ -54,7 +53,6 @@ export default function Feed() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <div className="container mx-auto px-4 py-6">
         <div className="grid gap-6 lg:grid-cols-12">
           {/* Left Sidebar */}
